@@ -27,7 +27,7 @@ export const SidebarContent = () => {
               variant="ghost"
               className="hidden p-2 md:inline-flex"
               aria-label="Expandir sidebar"
-              title="Expandirr sidebar"
+              title="Expandir sidebar"
               onClick={expandedSidebar}
             >
               <ArrowRightToLine className="size-5" />
@@ -52,6 +52,8 @@ export const SidebarContent = () => {
               <Button
                 variant="secondary"
                 className="hidden p-2 md:inline-flex"
+                aria-label="Minimizar sidebar"
+                title="Minimizar sidebar"
                 onClick={collapsedSidebar}
               >
                 <ArrowLeftToLine className="size-5" />
