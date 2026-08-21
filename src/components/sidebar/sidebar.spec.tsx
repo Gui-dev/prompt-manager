@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { Sidebar } from '.'
 
 vi.mock('next/router', () => ({
@@ -12,6 +13,8 @@ const makeSut = () => {
 }
 
 describe('Sidebar', () => {
+  const user = userEvent.setup()
+
   it('should be rendered link to create prompt', () => {
     makeSut()
 
@@ -37,5 +40,22 @@ describe('Sidebar', () => {
     })
 
     expect(expandButton).not.toBeInTheDocument()
+  })
+
+  it('should collapse and show the expand button', async () => {
+    makeSut()
+
+    const collapseButton = screen.getByRole('button', {
+      name: /minimizar sidebar/i,
+    })
+
+    await user.click(collapseButton)
+
+    const expandButton = screen.getByRole('button', {
+      name: /expandir sidebar/i,
+    })
+
+    expect(expandButton).toBeVisible()
+    expect(collapseButton).not.toBeInTheDocument()
   })
 })
