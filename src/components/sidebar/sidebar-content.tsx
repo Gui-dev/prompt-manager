@@ -63,7 +63,7 @@ export const SidebarContent = () => {
 
           <div>
             <Link
-              href="/"
+              href="/new"
               className="flex w-full items-center justify-center gap-2 rounded-lg bg-cyan-500 p-2 text-gray-800 hover:bg-cyan-400"
             >
               <Plus className="size-5" />

@@ -2,12 +2,6 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Sidebar } from '.'
 
-vi.mock('next/router', () => ({
-  useRouter: () => ({
-    push: vi.fn(),
-  }),
-}))
-
 const makeSut = () => {
   return render(<Sidebar />)
 }
@@ -57,5 +51,13 @@ describe('Sidebar', () => {
 
     expect(expandButton).toBeVisible()
     expect(collapseButton).not.toBeInTheDocument()
+  })
+
+  it('should have a link to the new prompt page', () => {
+    makeSut()
+
+    const button = screen.getByRole('link', { name: 'Novo prompt' })
+
+    expect(button).toHaveAttribute('href', '/new')
   })
 })
