@@ -7,7 +7,17 @@ import { cn } from '@/lib/utils'
 import { Logo } from '../logo'
 import { Button } from '../ui/button'
 
-export const SidebarContent = () => {
+export interface IPrompt {
+  id: string
+  title: string
+  content: string
+}
+
+interface ISidebarContentProps {
+  prompts: IPrompt[]
+}
+
+export const SidebarContent = ({ prompts }: ISidebarContentProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false)
 
   const collapsedSidebar = () => setIsCollapsed(true)
