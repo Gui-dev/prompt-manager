@@ -102,6 +102,20 @@ export const SidebarContent = ({ prompts }: ISidebarContentProps) => {
           </div>
         </section>
       )}
+
+      {prompts.length === 0 && (
+        <div className="flex flex-1 items-center justify-center">
+          <p className="text-muted-foreground text-sm">Nenhum prompt cadastrado</p>
+        </div>
+      )}
+
+      {prompts.map(prompt => {
+        return (
+          <div key={prompt.id}>
+            <p>{prompt.title}</p>
+          </div>
+        )
+      })}
     </aside>
   )
 }
