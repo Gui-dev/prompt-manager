@@ -21,6 +21,16 @@ describe('SidebarContent', () => {
     expect(screen.getByRole('link', { name: 'Novo prompt' })).toBeVisible()
   })
 
+  it('should be possible to update the search field as you type.', async () => {
+    makeSut()
+
+    const text = 'AI'
+    const searchInput = screen.getByPlaceholderText(/Buscar prompts.../i)
+    await user.type(searchInput, text)
+
+    expect(searchInput).toHaveValue(text)
+  })
+
   describe('Expand / Collapse', () => {
     it('should initialize expanded sidebar', () => {
       makeSut()
@@ -73,6 +83,8 @@ describe('SidebarContent', () => {
   describe('Prompt List', () => {
     it('should render prompt list', () => {
       makeSut()
+
+      expect(screen.getByText(prompts[0].title)).toBeInTheDocument()
     })
   })
 })
