@@ -1,11 +1,12 @@
 'use client'
 
-import { ArrowLeftToLine, ArrowRightToLine, Plus, X } from 'lucide-react'
+import { ArrowLeftToLine, ArrowRightToLine, Plus, Search, X } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Logo } from '../logo'
 import { Button } from '../ui/button'
+import { Input } from '../ui/input'
 
 export interface IPrompt {
   id: string
@@ -69,6 +70,25 @@ export const SidebarContent = ({ prompts }: ISidebarContentProps) => {
                 <ArrowLeftToLine className="size-5" />
               </Button>
             </header>
+          </div>
+
+          <div className="mb-4">
+            <form>
+              <label
+                htmlFor="q"
+                className="flex cursor-text items-center gap-2 rounded-lg border p-1 px-2 transition-colors focus-within:border-gray-400"
+              >
+                <Search className="size-5" />
+                <Input
+                  id="q"
+                  type="text"
+                  name="q"
+                  placeholder="Buscar prompts..."
+                  autoFocus
+                  className="rounded-none border-none shadow-none outline-none focus-visible:ring-0 dark:bg-transparent"
+                />
+              </label>
+            </form>
           </div>
 
           <div>
