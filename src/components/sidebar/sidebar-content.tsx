@@ -5,8 +5,8 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Logo } from '../logo'
+import { SearchForm } from '../search-form'
 import { Button } from '../ui/button'
-import { Input } from '../ui/input'
 
 export interface IPrompt {
   id: string
@@ -33,7 +33,7 @@ export const SidebarContent = ({ prompts }: ISidebarContentProps) => {
     >
       {isCollapsed && (
         <section className="px-2 py-6">
-          <header className="mb-6 flex items-center justify-center">
+          <header className="mb-6 flex flex-col items-center justify-center gap-6">
             <Button
               variant="ghost"
               className="hidden p-2 md:inline-flex"
@@ -43,6 +43,23 @@ export const SidebarContent = ({ prompts }: ISidebarContentProps) => {
             >
               <ArrowRightToLine className="size-5" />
             </Button>
+
+            <Button
+              variant="outline"
+              className="hidden p-2 md:inline-flex"
+              aria-label="Buscar prompts"
+              title="Buscar prompts"
+              onClick={expandedSidebar}
+            >
+              <Search className="size-5" />
+            </Button>
+
+            <Link
+              href="/new"
+              className="flex items-center justify-center gap-2 rounded-lg bg-cyan-500 p-2 text-gray-800 hover:bg-cyan-400"
+            >
+              <Plus className="size-5" />
+            </Link>
           </header>
         </section>
       )}
@@ -73,22 +90,7 @@ export const SidebarContent = ({ prompts }: ISidebarContentProps) => {
           </div>
 
           <div className="mb-4">
-            <form>
-              <label
-                htmlFor="q"
-                className="flex cursor-text items-center gap-2 rounded-lg border p-1 px-2 transition-colors focus-within:border-gray-400"
-              >
-                <Search className="size-5" />
-                <Input
-                  id="q"
-                  type="text"
-                  name="q"
-                  placeholder="Buscar prompts..."
-                  autoFocus
-                  className="rounded-none border-none shadow-none outline-none focus-visible:ring-0 dark:bg-transparent"
-                />
-              </label>
-            </form>
+            <SearchForm />
           </div>
 
           <div>
@@ -103,7 +105,7 @@ export const SidebarContent = ({ prompts }: ISidebarContentProps) => {
         </section>
       )}
 
-      {prompts.length === 0 && (
+      {!isCollapsed && prompts.length === 0 && (
         <div className="flex flex-1 items-center justify-center">
           <p className="text-muted-foreground text-sm">Nenhum prompt cadastrado</p>
         </div>

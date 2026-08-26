@@ -2,6 +2,16 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { type IPrompt, SidebarContent } from './sidebar-content'
 
+const { routerMock } = vi.hoisted(() => ({
+  routerMock: {
+    push: vi.fn(),
+    replace: vi.fn(),
+  },
+}))
+vi.mock('next/navigation', () => ({
+  useRouter: () => routerMock,
+}))
+
 const prompts: IPrompt[] = [
   { id: '1', title: 'Prompt 1', content: 'Content 1' },
   { id: '2', title: 'Prompt 2', content: 'Content 2' },
@@ -67,6 +77,25 @@ describe('SidebarContent', () => {
 
       expect(expandButton).toBeVisible()
       expect(collapseButton).not.toBeInTheDocument()
+    })
+  })
+
+  describe('Search', () => {
+    it('should be possible to navigate with URL-encoded text by typing and clearing.', async () => {
+      makeSut()
+
+      const text = 'A B'
+      const searchInput = screen.getByPlaceholderText(/Buscar prompts.../i)
+      await user.type(searchInput, text)
+
+      expect(routerMock.replace).toHaveBeenCalled()
+      const lastCall = routerMock.replace.mock.calls.at(-1)
+      expect(lastCall?.[0]).toBe(`/?q=${encodeURIComponent(text)}`)
+
+      await user.clear(searchInput)
+
+      const lastClear = routerMock.replace.mock.calls.at(-1)
+      expect(lastClear?.[0]).toBe('/')
     })
   })
 
