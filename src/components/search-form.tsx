@@ -1,13 +1,14 @@
 'use client'
 
 import { Search } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { type ChangeEvent, useState } from 'react'
 import { Input } from './ui/input'
 
 export const SearchForm = () => {
   const router = useRouter()
-  const [query, setQuery] = useState('')
+  const searchParams = useSearchParams()
+  const [query, setQuery] = useState(searchParams.get('q') ?? '')
 
   const handleQueryChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newQuery = event.target.value

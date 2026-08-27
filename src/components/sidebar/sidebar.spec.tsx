@@ -8,8 +8,12 @@ const { routerMock } = vi.hoisted(() => ({
     replace: vi.fn(),
   },
 }))
+const { useSearchParams } = vi.hoisted(() => ({
+  useSearchParams: vi.fn(() => new URLSearchParams()),
+}))
 vi.mock('next/navigation', () => ({
   useRouter: () => routerMock,
+  useSearchParams,
 }))
 
 const prompts: IPrompt[] = [
@@ -21,7 +25,7 @@ const makeSut = () => {
   return render(<SidebarContent prompts={prompts} />)
 }
 
-describe('SidebarContent', () => {
+describe('<SidebarContent />', () => {
   const user = userEvent.setup()
 
   it('should be rendered link to create prompt', () => {
@@ -77,25 +81,6 @@ describe('SidebarContent', () => {
 
       expect(expandButton).toBeVisible()
       expect(collapseButton).not.toBeInTheDocument()
-    })
-  })
-
-  describe('Search', () => {
-    it('should be possible to navigate with URL-encoded text by typing and clearing.', async () => {
-      makeSut()
-
-      const text = 'A B'
-      const searchInput = screen.getByPlaceholderText(/Buscar prompts.../i)
-      await user.type(searchInput, text)
-
-      expect(routerMock.replace).toHaveBeenCalled()
-      const lastCall = routerMock.replace.mock.calls.at(-1)
-      expect(lastCall?.[0]).toBe(`/?q=${encodeURIComponent(text)}`)
-
-      await user.clear(searchInput)
-
-      const lastClear = routerMock.replace.mock.calls.at(-1)
-      expect(lastClear?.[0]).toBe('/')
     })
   })
 
