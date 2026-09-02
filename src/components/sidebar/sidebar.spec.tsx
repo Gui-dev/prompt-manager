@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { type IPrompt, SidebarContent } from './sidebar-content'
+import type { PromptSummary } from '@/core/domain/prompts/prompt.entity'
+import { SidebarContent } from './sidebar-content'
 
 const { routerMock } = vi.hoisted(() => ({
   routerMock: {
@@ -16,7 +17,7 @@ vi.mock('next/navigation', () => ({
   useSearchParams,
 }))
 
-const prompts: IPrompt[] = [
+const prompts: PromptSummary[] = [
   { id: '1', title: 'Prompt 1', content: 'Content 1' },
   { id: '2', title: 'Prompt 2', content: 'Content 2' },
 ]
@@ -81,6 +82,36 @@ describe('<SidebarContent />', () => {
 
       expect(expandButton).toBeVisible()
       expect(collapseButton).not.toBeInTheDocument()
+    })
+
+    it('should be able to display the "create new prompt" button in the minimized sidebar.', async () => {
+      makeSut()
+
+      const collapseButton = screen.getByRole('button', {
+        name: /minimizar sidebar/i,
+      })
+      await user.click(collapseButton)
+
+      const newPromptButton = screen.getByRole('link', {
+        name: 'Novo prompt',
+      })
+
+      expect(newPromptButton).toBeVisible()
+    })
+
+    it('should not be able to render prompts list in the minimized sidebar.', async () => {
+      makeSut()
+
+      const collapseButton = screen.getByRole('button', {
+        name: /minimizar sidebar/i,
+      })
+      await user.click(collapseButton)
+
+      const promptsList = screen.queryByRole('navigation', {
+        name: 'Lista de prompts',
+      })
+
+      expect(promptsList).not.toBeInTheDocument()
     })
   })
 

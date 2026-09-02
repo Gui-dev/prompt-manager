@@ -3,19 +3,15 @@
 import { ArrowLeftToLine, ArrowRightToLine, Plus, Search, X } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
+import type { PromptSummary } from '@/core/domain/prompts/prompt.entity'
 import { cn } from '@/lib/utils'
 import { Logo } from '../logo'
+import { PromptList } from '../prompt-list'
 import { SearchForm } from '../search-form'
 import { Button } from '../ui/button'
 
-export interface IPrompt {
-  id: string
-  title: string
-  content: string
-}
-
 interface ISidebarContentProps {
-  prompts: IPrompt[]
+  prompts: PromptSummary[]
 }
 
 export const SidebarContent = ({ prompts }: ISidebarContentProps) => {
@@ -57,6 +53,8 @@ export const SidebarContent = ({ prompts }: ISidebarContentProps) => {
             <Link
               href="/new"
               className="flex items-center justify-center gap-2 rounded-lg bg-cyan-500 p-2 text-gray-800 hover:bg-cyan-400"
+              aria-label="Novo prompt"
+              title="Novo prompt"
             >
               <Plus className="size-5" />
             </Link>
@@ -111,13 +109,14 @@ export const SidebarContent = ({ prompts }: ISidebarContentProps) => {
         </div>
       )}
 
-      {prompts.map(prompt => {
-        return (
-          <div key={prompt.id}>
-            <p>{prompt.title}</p>
-          </div>
-        )
-      })}
+      {!isCollapsed && prompts.length > 0 && (
+        <nav
+          className="flex flex-1 flex-col overflow-y-auto px-6 pb-6"
+          aria-label="Lista de prompts"
+        >
+          <PromptList prompts={prompts} />
+        </nav>
+      )}
     </aside>
   )
 }
