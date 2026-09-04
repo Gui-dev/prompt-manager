@@ -1,13 +1,15 @@
 'use client'
 
-import { ArrowLeftToLine, ArrowRightToLine, Plus, Search, X } from 'lucide-react'
+import { ArrowLeftToLine, ArrowRightToLine, Loader, Plus, Search, X } from 'lucide-react'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { type ChangeEvent, useActionState, useRef, useState } from 'react'
+import { searchPromptAction } from '@/app/actions/prompt.action'
+import { Input } from '@/components/ui/input'
 import type { PromptSummary } from '@/core/domain/prompts/prompt.entity'
 import { cn } from '@/lib/utils'
 import { Logo } from '../logo'
 import { PromptList } from '../prompt-list'
-import { SearchForm } from '../search-form'
 import { Button } from '../ui/button'
 
 interface ISidebarContentProps {
@@ -19,6 +21,26 @@ export const SidebarContent = ({ prompts }: ISidebarContentProps) => {
 
   const collapsedSidebar = () => setIsCollapsed(true)
   const expandedSidebar = () => setIsCollapsed(false)
+
+  const [searchState, searchAction, isPending] = useActionState(searchPromptAction, {
+    success: true,
+    prompts,
+  })
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const formRef = useRef<HTMLFormElement | null>(null)
+  const [query, setQuery] = useState(searchParams.get('q') ?? '')
+  const hasQuery = query.trim().length > 0
+  const promptList = hasQuery ? (searchState.prompts ?? prompts) : prompts
+
+  const handleQueryChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newQuery = event.target.value
+    setQuery(newQuery)
+    const url = newQuery ? `/?q=${encodeURIComponent(newQuery)}` : '/'
+
+    router.replace(url, { scroll: false })
+    formRef.current?.requestSubmit()
+  }
 
   return (
     <aside
@@ -88,7 +110,31 @@ export const SidebarContent = ({ prompts }: ISidebarContentProps) => {
           </div>
 
           <div className="mb-4">
-            <SearchForm />
+            <form ref={formRef} action={searchAction} className="group relative w-full">
+              <label
+                htmlFor="q"
+                className="flex cursor-text items-center gap-2 rounded-lg border p-1 px-2 transition-colors focus-within:border-gray-400"
+              >
+                <Search className="size-5" />
+                <Input
+                  id="q"
+                  type="text"
+                  name="q"
+                  value={query}
+                  placeholder="Buscar prompts..."
+                  autoFocus
+                  className="rounded-none border-none shadow-none outline-none focus-visible:ring-0 dark:bg-transparent"
+                  onChange={handleQueryChange}
+                />
+              </label>
+
+              {isPending && (
+                <div className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center gap-2">
+                  <Loader className="size-5 animate-spin" />
+                  <p className="sr-only">Buscando...</p>
+                </div>
+              )}
+            </form>
           </div>
 
           <div>
@@ -114,7 +160,7 @@ export const SidebarContent = ({ prompts }: ISidebarContentProps) => {
           className="flex flex-1 flex-col overflow-y-auto px-6 pb-6"
           aria-label="Lista de prompts"
         >
-          <PromptList prompts={prompts} />
+          <PromptList prompts={promptList} />
         </nav>
       )}
     </aside>
